@@ -46,29 +46,23 @@ public class ValidationItemControllerV4 {
     }
 
     @PostMapping("/add")
-    public String addItem(@Validated @ModelAttribute("item") ItemSaveForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String addItem(@Validated @ModelAttribute("item") ItemSaveForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
-        // 특정 필드가 아닌 복합 룰 검증
         if (form.getPrice() != null && form.getQuantity() != null) {
-            int resultPrice = form.getPrice() * form.getQuantity();
-            if (resultPrice < 10000) {
-                bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
+            int totalPrice = form.getPrice() * form.getQuantity();
+            if (totalPrice < 10000) {
+                bindingResult.reject("totalPriceMin", new Object[]{10000, totalPrice}, null);
             }
         }
 
-        // 검증에 실패하면 다시 입력 폼으로
+        //검증에 실패하면 다시 입력 폼으로
         if (bindingResult.hasErrors()) {
-            log.info("errors= {}", bindingResult);
+            log.info("errors={}", bindingResult);
             return "validation/v4/addForm";
         }
 
-        // 성공 로직
-
-        Item item = new Item();
-        item.setItemName(form.getItemName());
-        item.setPrice(form.getPrice());
-        item.setQuantity(form.getQuantity());
-//        item.setId(form.getId());
+        //성공 로직
+        Item item = new Item(form.getItemName(), form.getPrice(), form.getQuantity());
 
         Item savedItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId", savedItem.getId());
@@ -86,11 +80,10 @@ public class ValidationItemControllerV4 {
     @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @Validated @ModelAttribute("item") ItemUpdateForm form, BindingResult bindingResult) {
 
-        // 특정 필드가 아닌 복합 룰 검증
         if (form.getPrice() != null && form.getQuantity() != null) {
-            int resultPrice = form.getPrice() * form.getQuantity();
-            if (resultPrice < 10000) {
-                bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
+            int totalPrice = form.getPrice() * form.getQuantity();
+            if (totalPrice < 10000) {
+                bindingResult.reject("totalPriceMin", new Object[]{10000, totalPrice}, null);
             }
         }
 
@@ -99,14 +92,8 @@ public class ValidationItemControllerV4 {
             return "validation/v4/editForm";
         }
 
-        Item itemParam = new Item();
-        itemParam.setItemName(form.getItemName());
-        itemParam.setPrice(form.getPrice());
-        itemParam.setQuantity(form.getQuantity());
-
+        Item itemParam = new Item(form.getItemName(), form.getPrice(), form.getQuantity());
         itemRepository.update(itemId, itemParam);
         return "redirect:/validation/v4/items/{itemId}";
     }
-
 }
-

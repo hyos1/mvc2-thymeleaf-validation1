@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-//@ScriptAssert(lang = "javascript", script = "_this.price * _this.quantity >= 10000", message = "총합이 10,000원 이상이여야 합니다.")
+//@ScriptAssert(lang = "javascript", script = "_this.price * _this.quantity >= 10000", message = "총 합은 10000원 이상이어야 합니다.")
 public class Item {
 
 //    @NotNull(groups = UpdateCheck.class)

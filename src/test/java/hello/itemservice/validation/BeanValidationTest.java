@@ -1,6 +1,7 @@
 package hello.itemservice.validation;
 
 import hello.itemservice.domain.item.Item;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.validation.ConstraintViolation;
@@ -21,10 +22,10 @@ public class BeanValidationTest {
         item.setPrice(0);
         item.setQuantity(10000);
 
-        Set<ConstraintViolation<Item>> violations = validator.validate(item);
-        for (ConstraintViolation<Item> violation : violations) {
+        Set<ConstraintViolation<Item>> validate = validator.validate(item);
+        for (ConstraintViolation<Item> violation : validate) {
             System.out.println("violation = " + violation);
-            System.out.println("violation.getMessage() = " + violation.getMessage());
+            System.out.println("violation = " + violation.getMessage());
         }
     }
 }
